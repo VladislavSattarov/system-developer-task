@@ -17,7 +17,6 @@ int open(const char *filename, int flags, ...)
 					 ...))dlsym(RTLD_NEXT, "open");
 	}
 
-	// Логи
 	uint64_t tm_stamp = GetCurrentTime();
 
 	int fd;
@@ -31,13 +30,12 @@ int open(const char *filename, int flags, ...)
 	}
 	va_end(args);
 
-	LogEntry log;
-	log.timestamp = tm_stamp;
-	log.filename = filename;
-	log.type = LogType::OPEN;
-	log.fd_rc = fd;
-	log.file_descriptor = fd;
-	log.flags = flags;
+	LogEntry log = { .timestamp = tm_stamp,
+			 .type = LogType::OPEN,
+			 .file_descriptor = fd,
+			 .filename = filename,
+			 .flags = flags,
+			 .fd_rc = fd };
 
 	shared_buffer.AddData(log);
 	return fd;
@@ -54,11 +52,10 @@ int close(int fd)
 
 	int return_code = original_close(fd);
 
-	LogEntry log;
-	log.timestamp = tm_stamp;
-	log.type = LogType::CLOSE;
-	log.fd_rc = return_code;
-	log.file_descriptor = fd;
+	LogEntry log = { .timestamp = tm_stamp,
+			 .type = LogType::CLOSE,
+			 .file_descriptor = fd,
+			 .fd_rc = return_code };
 
 	shared_buffer.AddData(log);
 	return return_code;
@@ -76,13 +73,12 @@ off_t lseek(int fd, off_t offset, int whence)
 
 	off_t return_offset = original_lseek(fd, offset, whence);
 
-	LogEntry log;
-	log.timestamp = tm_stamp;
-	log.type = LogType::LSEEK;
-	log.offset = offset;
-	log.resulted_offset = return_offset;
-	log.whence = whence;
-	log.file_descriptor = fd;
+	LogEntry log = { .timestamp = tm_stamp,
+			 .type = LogType::LSEEK,
+			 .file_descriptor = fd,
+			 .whence = whence,
+			 .offset = offset,
+			 .resulted_offset = return_offset };
 
 	shared_buffer.AddData(log);
 	return return_offset;

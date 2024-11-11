@@ -1,16 +1,6 @@
 #pragma once
 #include "log_entry.h"
 #include "shared_buffer.h"
-#include <cstddef>
-#include <cstdint>
-#include <cstring>
-#include <ctime>
-#include <dlfcn.h>
-#include <fcntl.h>
-#include <iostream>
-#include <stdarg.h>
-#include <sys/time.h>
-#include <sys/types.h>
 
 static bool in_logging = false;
 

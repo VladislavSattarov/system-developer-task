@@ -1,5 +1,16 @@
 #pragma once
 
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+#include <ctime>
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <iostream>
+#include <stdarg.h>
+#include <sys/time.h>
+#include <sys/types.h>
+
 enum class LogType : uint8_t {
 	OPEN,
 	CLOSE,

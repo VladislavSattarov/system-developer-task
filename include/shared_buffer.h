@@ -12,8 +12,8 @@
 
 template <class T> class SharedBuffer {
     public:
-	SharedBuffer(const std::string &name, bool create = true,
-		     size_t buffer_size = BUFFER_SIZE)
+	SharedBuffer(const std::string &name = "shared_log_buffer", bool create = true,
+		     size_t buffer_size = BUFFER_SIZE * sizeof(T))
 		: buffer_name_(name)
 		, buffer_size_(buffer_size)
 		, create(create)
@@ -26,7 +26,7 @@ template <class T> class SharedBuffer {
 
 			segment_ = boost::interprocess::managed_shared_memory(
 				boost::interprocess::create_only,
-				"shared_log_buffer", buffer_size_);
+				buffer_name_.c_str(), buffer_size_);
 
 			const ShmemAllocator allocator(
 				segment_.get_segment_manager());
@@ -58,7 +58,9 @@ template <class T> class SharedBuffer {
 			return false;
 		}
 		if (queue_->size() >= buffer_size_) {
-			return false;
+			queue_->pop_front();
+			queue_->push_back(data);
+			return true;
 		}
 		queue_->push_back(data);
 		return true;

@@ -20,7 +20,7 @@ using Queue = boost::interprocess::deque<LogEntry, ShmemAllocator>;
 
 void LogToFile(const DemonConfig &config, const LogEntry &entry)
 {
-	std::ofstream log_file(config.log_file, std::ios_base::app);
+	std::ofstream log_file(config.log_file, std::ios_base::trunc);
 	if (!log_file.is_open()) {
 		std::cerr << "Error opening log file: " << config.log_file
 			  << std::endl;
@@ -123,9 +123,6 @@ int main(int argc, char *argv[])
 
 	DemonConfig config = { log_file, poll_interval_ms };
 
-	managed_shared_memory segment(open_only, "shared_log_buffer");
-	Queue *queue = segment.find<Queue>("Queue").first;
-	queue->front();
 	SharedBuffer<LogEntry> shared_buffer("shared_log_buffer", false);
 
 	if (demon_type == "--file") {
